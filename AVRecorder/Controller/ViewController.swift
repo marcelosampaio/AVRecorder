@@ -18,24 +18,18 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         do {
             try recordingSession.setCategory(.playAndRecord, mode: .default)
             try recordingSession.setActive(true)
-            recordingSession.requestRecordPermission() { [unowned self] allowed in
+            recordingSession.requestRecordPermission() { allowed in
                 DispatchQueue.main.async {
                     if allowed {
-                        self.loadRecordingUI()
+                        print("👍 microphone access granted")
                     } else {
                         print("❌ no permission granted")
                     }
                 }
             }
         } catch {
-            // failed to record!
             print("❌ failed to record")
         }
-    }
-    
-    func loadRecordingUI() {
-        recordButton.setTitle("Tap to Record", for: .normal)
-        recordButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .title1)
     }
     
     @IBAction func recordTapped(_ sender: Any) {
@@ -65,8 +59,6 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
             audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
             audioRecorder.delegate = self
             audioRecorder.record()
-
-            recordButton.setTitle("Tap to Stop", for: .normal)
         } catch {
             print("❌ error starting record")
         }
